@@ -9,17 +9,14 @@ import Togglabe from './components/Togglabe'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
 
   useEffect(() => {
-    user && blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [user])
+    blogService.getAll().then((blogs) => setBlogs(blogs))
+  }, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -30,35 +27,28 @@ const App = () => {
     }
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const messageHandler = (error) => {
+    console.error(error)
+    setErrorMessage(error.response.data.message)
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000)
+  }
+
+  const loginUser = async (credentials) => {
     try {
-      const user = await loginService.login({
-        username,
-        password,
-      })
+      const user = await loginService.login(credentials)
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      setErrorMessage('Wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+    } catch (error) {
+      messageHandler(error)
     }
   }
 
-  const handleOnChange = (event) => {
-    if (event.target.id === 'username') setUsername(event.target.value)
-    if (event.target.id === 'password') setPassword(event.target.value)
-  }
-
-  const handleOnClick = () => {
+  const handleOnClickLogout = () => {
     window.localStorage.removeItem('loggedUser')
     setUser(null)
-    //blogService.setToken(null)
   }
 
   const postBlog = async (blogObject) => {
@@ -71,40 +61,63 @@ const App = () => {
       blogFormRef.current.toggleVisibility()
       setBlogs(blogs.concat({ ...createdBlog, user: user }))
     } catch (error) {
-      console.error(error)
-      setErrorMessage(error.response.data.error)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      messageHandler(error)
+    }
+  }
+
+  const putFavorite = async (blogId, likeObject) => {
+    try {
+      const updatedBlog = await blogService.putFavorite(blogId, likeObject)
+
+      setBlogs((prevBlogs) =>
+        prevBlogs.map((blog) =>
+          blog.id === updatedBlog.id
+            ? { ...blog, likes: updatedBlog.likes }
+            : blog
+        )
+      )
+    } catch (error) {
+      messageHandler(error)
+    }
+  }
+
+  const deleteOneBlog = async (blogId) => {
+    try {
+      const response = await blogService.deleteOne(blogId)
+      response.status === 204 &&
+        setBlogs((prevblogs) => prevblogs.filter((blog) => blog.id !== blogId))
+    } catch (error) {
+      messageHandler(error)
     }
   }
 
   return (
-    <div>
+    <main>
       <h1>Blogs</h1>
 
       <Notification message={errorMessage} />
 
       {user === null ? (
-        <LoginForm
-          handleLogin={handleLogin}
-          handleOnChange={handleOnChange}
-          username={username}
-          password={password}
-        />
+        <LoginForm loginUser={loginUser} />
       ) : (
-        <div>
+        <>
           <p>User: {user.name}</p>
-          <button onClick={handleOnClick}>Logout</button>
-          <Togglabe showLabel='Create blog' hideLabel='Cancel' ref={blogFormRef}>
-            <BlogForm
-              postBlog={postBlog}
-            />
+          <button onClick={handleOnClickLogout}>Logout</button>
+          <Togglabe
+            showLabel='Create blog'
+            hideLabel='Cancel'
+            ref={blogFormRef}
+          >
+            <BlogForm postBlog={postBlog} />
           </Togglabe>
-          <Blogs blogs={blogs} />
-        </div>
+          <Blogs
+            blogs={blogs}
+            putFavorite={putFavorite}
+            deleteOneBlog={deleteOneBlog}
+          />
+        </>
       )}
-    </div>
+    </main>
   )
 }
 

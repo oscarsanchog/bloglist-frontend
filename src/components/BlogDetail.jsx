@@ -1,4 +1,8 @@
-const BlogDetail = ({ blog }) => {
+const BlogDetail = ({ blog, putFavorite }) => {
+  const addFavorite = () => {
+      putFavorite(blog.id, { likes: blog.likes + 1 })
+  }
+
   return (
     <section>
       <h3>{blog.title}</h3>
@@ -9,7 +13,7 @@ const BlogDetail = ({ blog }) => {
       <p>
         <span>Likes: </span>
         <span>{blog.likes} </span>
-        <button>❤️</button>
+        <button onClick={addFavorite}>❤️</button>
       </p>
       <p>
         <span>Author: </span>

@@ -20,4 +20,16 @@ const postOne = async (newBlog) => {
   return response.data
 }
 
-export default { getAll, postOne, setToken }
+const putFavorite = async (blogId, likeObject) => {
+  const response = await axios.put(`${url.base}${url.blogEndpoint}/${blogId}`, likeObject)
+  return response.data
+}
+
+const deleteOne = async (blogId) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  return await axios.delete(`${url.base}${url.blogEndpoint}/${blogId}`, config) 
+}
+
+export default { getAll, postOne, setToken, putFavorite, deleteOne }
