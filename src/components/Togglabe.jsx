@@ -1,4 +1,5 @@
 import { forwardRef, useImperativeHandle, useState } from 'react'
+import PropTypes from 'prop-types'
 
 const Togglabe = forwardRef(({ showLabel, hideLabel, children }, ref) => {
   const [visible, setVisible] = useState(false)
@@ -17,4 +18,16 @@ const Togglabe = forwardRef(({ showLabel, hideLabel, children }, ref) => {
     </>
   )
 })
+
+Togglabe.propTypes = {
+  showLabel: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.oneOf([undefined])
+  ]),
+  hideLabel: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.oneOf([undefined])
+  ])
+}
+
 export default Togglabe
