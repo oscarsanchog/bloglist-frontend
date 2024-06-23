@@ -1,5 +1,7 @@
+import BlogSumary from './BlogSumary'
 import BlogDetail from './BlogDetail'
 import Togglabe from './Togglabe'
+
 
 const Blog = ({ blog, putFavorite, deleteOneBlog }) => {
   const deleteBlog = () => {
@@ -13,10 +15,8 @@ const Blog = ({ blog, putFavorite, deleteOneBlog }) => {
     )
 
   return (
-    <li>
-      <span>
-        <span>{blog.title}</span> <span>{blog.user.username}</span>
-      </span>{' '}
+    <li className='blog'>
+      <BlogSumary blog={blog} />
       <Togglabe>
         <BlogDetail blog={blog} putFavorite={putFavorite} />
       </Togglabe>

@@ -12,10 +12,10 @@ const Togglabe = forwardRef(({ showLabel, hideLabel, children }, ref) => {
   return visible === false ? (
     <button onClick={toggleVisibility}>{showLabel === undefined ? 'View' : showLabel}</button>
   ) : (
-    <>
+    <span className='togglabeContent'>
       {children}
       <button onClick={toggleVisibility}>{hideLabel === undefined ? 'Hide' : hideLabel}</button>
-    </>
+    </span>
   )
 })
 
