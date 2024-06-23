@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const BlogForm = ({ postBlog }) => {
   const emptyForm = { title: '', url: '' }
@@ -16,20 +16,38 @@ const BlogForm = ({ postBlog }) => {
     postBlog(newBlog)
     setNewBlog(emptyForm)
   }
-  
-  return (
-  <form onSubmit={addBlog}>
-    <div>
-      <label htmlFor='title'>Title: </label>
-      <input type='text' id="title" value={newBlog.title} onChange={handleBlogChange} />
-    </div>
 
-    <div>
-      <label htmlFor='url'>Url: </label>
-      <input type='text' id="url" value={newBlog.url} onChange={handleBlogChange} />
-    </div>
-    <button type="submit">Create</button>
-  </form>
-)}
+  return (
+    <section className='formSection'>
+      <h3>Create a new blog</h3>
+      <form onSubmit={addBlog}>
+        <div>
+          <label htmlFor='title'>Title: </label>
+          <input
+            placeholder='Write the blog title'
+            type='text'
+            id='title'
+            name='title'
+            value={newBlog.title}
+            onChange={handleBlogChange}
+          />
+        </div>
+
+        <div>
+          <label htmlFor='url'>Url: </label>
+          <input
+            placeholder='Write the url of your blog'
+            type='text'
+            id='url'
+            name='url'
+            value={newBlog.url}
+            onChange={handleBlogChange}
+          />
+        </div>
+        <button type='submit'>Create</button>
+      </form>
+    </section>
+  )
+}
 
 export default BlogForm
