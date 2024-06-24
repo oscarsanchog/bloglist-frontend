@@ -24,6 +24,7 @@ const LoginForm = ({ loginUser }) => {
         <input
           type='text'
           id='username'
+          data-testid='username'
           value={credentials.username}
           name='username'
           onChange={handleOnChangeCredentials}
@@ -34,6 +35,7 @@ const LoginForm = ({ loginUser }) => {
         <input
           type='password'
           id='password'
+          data-testid='password'
           value={credentials.password}
           name='password'
           onChange={handleOnChangeCredentials}
