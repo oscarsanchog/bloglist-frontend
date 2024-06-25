@@ -1,6 +1,6 @@
 const BlogDetail = ({ blog, putFavorite }) => {
   const addFavorite = () => {
-      putFavorite(blog.id, { likes: blog.likes + 1 })
+    putFavorite(blog.id, { likes: blog.likes + 1 })
   }
 
   return (
@@ -12,7 +12,7 @@ const BlogDetail = ({ blog, putFavorite }) => {
       </p>
       <p>
         <span>Likes: </span>
-        <span>{blog.likes} </span>
+        <span data-testid='likes'>{blog.likes}</span>
         <button onClick={addFavorite}>❤️</button>
       </p>
       <p>

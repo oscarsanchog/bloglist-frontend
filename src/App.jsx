@@ -14,9 +14,25 @@ const App = () => {
 
   const blogFormRef = useRef()
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+  const messageHandler = (error) => {
+    console.error(error)
+    setErrorMessage(error.response.data.message)
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000)
+  }
+
+  const getBlogs = async () => {
+    try {
+      const allBlogs = await blogService.getAll()
+      const sortedBlogs = blogService.sortingBlogs(allBlogs)
+      setBlogs(sortedBlogs)
+    } catch (error) {
+      messageHandler(error)
+    }
+  }
+
+  useEffect(getBlogs, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -26,14 +42,6 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-
-  const messageHandler = (error) => {
-    console.error(error)
-    setErrorMessage(error.response.data.message)
-    setTimeout(() => {
-      setSuccessMessage(null)
-    }, 5000)
-  }
 
   const loginUser = async (credentials) => {
     try {
@@ -69,13 +77,14 @@ const App = () => {
     try {
       const updatedBlog = await blogService.putFavorite(blogId, likeObject)
 
-      setBlogs((prevBlogs) =>
-        prevBlogs.map((blog) =>
+      setBlogs((prevBlogs) => {
+        const updatedBlogs = prevBlogs.map((blog) =>
           blog.id === updatedBlog.id
             ? { ...blog, likes: updatedBlog.likes }
             : blog
         )
-      )
+        return blogService.sortingBlogs(updatedBlogs)
+      })
     } catch (error) {
       messageHandler(error)
     }

@@ -7,6 +7,9 @@ const setToken = (newToken) => {
   token = `Bearer ${newToken}`
 }
 
+const sortingBlogs = (blogs) => blogs.sort((a, b) => b.likes - a.likes)
+
+
 const getAll = async () => {
   const response = await axios.get(url.base + url.blogEndpoint)
   return response.data
@@ -32,4 +35,4 @@ const deleteOne = async (blogId) => {
   return await axios.delete(`${url.base}${url.blogEndpoint}/${blogId}`, config) 
 }
 
-export default { getAll, postOne, setToken, putFavorite, deleteOne }
+export default { getAll, postOne, setToken, putFavorite, deleteOne, sortingBlogs }
