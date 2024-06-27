@@ -1,8 +1,8 @@
 import axios from 'axios'
-import url from './url'
+import endpoints from './endpoints'
 
 const login = async (credentials) => {
-  const response = await axios.post(url.base + url.loginEndpoint, credentials)
+  const response = await axios.post(endpoints.login, credentials)
   return response.data
 }
 

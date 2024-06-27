@@ -18,7 +18,7 @@ const App = () => {
     console.error(error)
     setErrorMessage(error.response.data.message)
     setTimeout(() => {
-      setSuccessMessage(null)
+      setErrorMessage(null)
     }, 5000)
   }
 
@@ -32,9 +32,9 @@ const App = () => {
     }
   }
 
-  useEffect(getBlogs, [])
-
   useEffect(() => {
+    getBlogs()
+
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
@@ -48,7 +48,7 @@ const App = () => {
       const user = await loginService.login(credentials)
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      setUser(user)
+      setUser(user)      
     } catch (error) {
       messageHandler(error)
     }
